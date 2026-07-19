@@ -1,0 +1,29 @@
+name: Generate Unity Personal License
+
+on: workflow_dispatch
+
+jobs:
+  generate-license:
+    runs-on: ubuntu-latest
+    container:
+      image: unityci/editor:ubuntu-6000.3.20f1-android-3
+    steps:
+      - name: Activate Unity Personal License
+        run: |
+          unity-editor -batchmode -quit -nographics \
+            -username "$UNITY_EMAIL" \
+            -password "$UNITY_PASSWORD" \
+            -logFile /tmp/activate.log 2>&1 || true
+          echo "=== ACTIVATION LOG ==="
+          cat /tmp/activate.log
+          echo "=== LICENSE FILE ==="
+          LIC=$(find / -name "*.ulf" 2>/dev/null)
+          if [ -n "$LIC" ]; then
+            cat "$LIC"
+          else
+            echo "No .ulf found. Checking all unity directories..."
+            find / -path "*/unity*" -type f 2>/dev/null | head -20
+          fi
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
