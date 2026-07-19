@@ -1,0 +1,26 @@
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+
+# Asset meta data should be tracked
+!/[Aa]ssets/**/*.meta
+
+# IDE
+.idea/
+.vs/
+*.csproj
+*.sln
+*.DotSettings
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+.DS_Store
+Thumbs.db

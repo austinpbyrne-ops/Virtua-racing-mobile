@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_Script: {fileID: 11500000, guid: bf2edee5c58d82540a51f03df9d42094, type: 3}
+  m_Name: URP-Balanced
+  m_EditorClassIdentifier: 
+  k_XR: 0
+  k_Quality: 2
+  k_RenderScale: 1.0
+  k_ShadowQuality: 0
+  k_ShadowCascades: 1
+  k_SoftShadows: 0
+  k_MSAA: 1
+  k_HDR: 0
+  k_PostProcessing: 0
+  k_Bloom: 0
