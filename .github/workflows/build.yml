@@ -6,33 +6,41 @@ on:
   workflow_dispatch:
 
 jobs:
+  request-license:
+    name: Request Unity License
+    runs-on: ubuntu-latest
+    outputs:
+      license: ${{ steps.activation.outputs.license }}
+    steps:
+      - uses: game-ci/unity-request-activation@v2
+        id: requestActivation
+        with:
+          unityVersion: 6000.3.20f1
+      - name: Activate license
+        id: activation
+        uses: game-ci/unity-activate@v2
+        with:
+          unityVersion: 6000.3.20f1
+          unityEmail: ${{ secrets.UNITY_EMAIL }}
+          unityPassword: ${{ secrets.UNITY_PASSWORD }}
+
   build-android:
     name: Build Android APK
+    needs: request-license
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
-
       - uses: actions/cache@v4
         with:
           path: Library
           key: Library-android-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-android-
-
+          restore-keys: Library-android-
       - uses: game-ci/unity-builder@v4
         env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_LICENSE: ${{ needs.request-license.outputs.license }}
         with:
           targetPlatform: Android
           unityVersion: 6000.3.20f1
-          allowDirtyBuild: true
-
       - uses: actions/upload-artifact@v4
         with:
           name: virtua-racing-android
@@ -40,29 +48,21 @@ jobs:
 
   build-ios:
     name: Build iOS Xcode Project
+    needs: request-license
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          lfs: true
-
       - uses: actions/cache@v4
         with:
           path: Library
           key: Library-ios-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-ios-
-
+          restore-keys: Library-ios-
       - uses: game-ci/unity-builder@v4
         env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_LICENSE: ${{ needs.request-license.outputs.license }}
         with:
           targetPlatform: iOS
           unityVersion: 6000.3.20f1
-          allowDirtyBuild: true
-
       - uses: actions/upload-artifact@v4
         with:
           name: virtua-racing-ios
